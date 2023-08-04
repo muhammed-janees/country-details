@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Country</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body background="https://getwallpapers.com/wallpaper/full/b/4/8/185436.jpg">
+
+    <div class="container mt-5 text-center">
+        <h1 class="text-success m-3">Know more about Counties</h1>
+        <div class="row">
+            <div class="col-lg-3"></div>
+            <div class="col-lg-6">
+                <div class="d-flex justify-content-center p-3">
+                    <input id="user_input" placeholder="Enter Country Name" type="text" class="form-control">
+                    <button onclick="search()" class="btn btn-primary ms-3" type="button"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </div>
+                <div id="result" class="d-flex justify-content-center">
+
+                </div>
+            </div>
+            <div class="col-lg-3"></div>
+        </div>
+    </div>
+    
+</body>
+<script>
+    const search = async () => {
+        let searchKey = user_input.value
+        if(searchKey){
+            //api call to restcountries with searchkey
+            const response = await fetch(`https://restcountries.com/v3.1/name/${searchKey}?fullText=true`)
+            const countryDetails = await response.json()
+            console.log(countryDetails[0]);
+            let flag = countryDetails[0].flags.png
+            let country = countryDetails[0].name.common
+            let capital = countryDetails[0].capital
+            let population = countryDetails[0].population
+            let timezone = countryDetails[0].timezones
+            let continent = countryDetails[0].continents
+            let map = countryDetails[0].maps.googleMaps
+
+            //to get current country currency
+            let currencies = countryDetails[0].currencies
+            let countryCode = Object.keys(currencies)
+            let currency = currencies[countryCode[0]]
+
+            //to get current country language
+            let languages = countryDetails[0].languages
+            let allLangauges = Object.values(languages)
+            let currentCountryLanguages = allLangauges.join(",") 
+
+            result.innerHTML =`
+            <div class="card" style="width: 18rem;">
+  <img src="${flag}" class="card-img-top" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">${country}</h5>
+    
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">Capital: ${capital}</li>
+    <li class="list-group-item">Population: ${population}</li>
+    <li class="list-group-item">Timezone: ${timezone}</li>
+    <li class="list-group-item">Continent: ${continent}</li>
+    <li class="list-group-item">Currency: ${currency.symbol}, ${currency.name}</li>
+    <li class="list-group-item">Languages: ${currentCountryLanguages}</li>
+  </ul>
+  <div class="card-body">
+    <a href="${map}" target="_blank" class="card-link">Click here to view in Google Maps</a>
+  </div>
+</div>
+            `;
+        }else{
+            alert("Please Enter the Country Name")
+        }
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+    crossorigin="anonymous"></script>
+</html>
